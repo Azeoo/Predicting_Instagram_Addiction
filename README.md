@@ -1,0 +1,1 @@
+This is a Flask API built for a model that predicts Instagram addiction. The model, based on logistic regression, was trained on real-time data collected through surveys from various users. With an accuracy of 96%, the model analyzes user behavior and engagement patterns to predict the likelihood of Instagram addiction.
