@@ -9,10 +9,19 @@ CORS(app)  # Enable CORS for all routes
 
 # Load the trained model and scaler
 model = joblib.load("logistic_model.pkl")  # Load logistic regression model
+level_model = joblib.load("level_addiction_model.pkl")  # Model for addiction level (0, 1, 2, or 3)
 scaler = joblib.load("scaler.pkl")  # Load the trained scaler
 
 # Custom threshold
 THRESHOLD = 0.4
+
+# Define feature names (must match training data)
+FEATURE_COLUMNS = [
+    "time_spent", "frequency_opened", "fomo_intensity", "disrupted_sleep",
+    "difficulty_reducing_usage", "escape_mechanism", "interference_with_work",
+    "late_night_usage", "anxious_without_use", "disrupted_routine"
+]
+
 
 @app.route("/predict", methods=["POST"])
 def predict():
@@ -27,6 +36,8 @@ def predict():
         # Convert input data to numpy array and reshape
         features = np.array(data["features"]).reshape(1, -1)
         # print("Raw Features:", features)
+
+        features_level = pd.DataFrame(features, columns=FEATURE_COLUMNS) # Resolving pandas error RandomForest model for column name
 
         # Fix: Convert to DataFrame with correct column names
         features_df = pd.DataFrame(features, columns=scaler.feature_names_in_)
@@ -43,10 +54,15 @@ def predict():
         addiction_status = int(p_prob > THRESHOLD)  # 1 = Addicted, 0 = Not Addicted
         # print("Predicted Addiction Status:", addiction_status)
 
-        # Return prediction result
+        # 🔹 **Second Model: Predict Addiction Level (Use RAW Data)**
+        addiction_level = level_model.predict(features_level)[0]  # Use original unscaled data
+
+
+        # Return both predictions to frontend
         return jsonify({
-            "addiction_status": addiction_status,
-            "probability": round(p_prob, 4)  # Rounded probability for better readability
+            "addiction_status": addiction_status,  # 0 = Not Addicted, 1 = Addicted
+            "probability": round(p_prob, 4),  # Probability of addiction
+            "addiction_level": int(addiction_level)  # Level (0, 1, 2, 3)
         })
 
     except Exception as e:
