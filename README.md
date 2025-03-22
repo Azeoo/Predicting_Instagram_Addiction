@@ -1,3 +1,3 @@
 This is a Flask API built for a model that predicts Instagram addiction. The model, based on logistic regression, was trained on real-time data collected through surveys from various users. With an accuracy of 96%, the model analyzes user behavior and engagement patterns to predict the likelihood of Instagram addiction.
 
-This Flask API uses a Random Forest Classifier to predict a user's level of addiction based on input data. The model classifies addiction severity into four categories: Low, Moderate, High, and Severe, helping to assess the user's behavior and guide appropriate intervention strategies.
+This Flask API also uses a Random Forest Classifier to predict a user's level of addiction based on input data. The model classifies addiction severity into four categories: Low, Moderate, High, and Severe, helping to assess the user's behavior and guide appropriate intervention strategies.
